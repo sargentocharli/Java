@@ -1,5 +1,7 @@
 /**
  * The very first program coded by a programmer every time he start with a new language.
+ * @author Lucas Márquez Muñoz
+ * @version 1.0
  */
 public class HelloWorld{                  // Declaring class HelloWorld
   public static void main(String[] args){ // Declaring main class

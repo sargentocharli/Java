@@ -3,7 +3,7 @@
  * @author Lucas Márquez Muñoz
  * @version 1.0
  */
-public class HelloWorld{                  // Declaring class HelloWorld
+public class HelloWorld{                  // Declaring HelloWorld class
   public static void main(String[] args){ // Declaring main class
     System.out.println("Hello World!");   // Showing on screen the output message: "Hello World"
   }                                       // End of main class

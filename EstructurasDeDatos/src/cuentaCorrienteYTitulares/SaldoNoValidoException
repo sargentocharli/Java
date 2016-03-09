@@ -1,0 +1,14 @@
+package cuentaCorrienteYTitulares;
+
+public class SaldoNoValidoException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	SaldoNoValidoException(String msj){
+		super(msj);
+	}
+
+}

@@ -1,17 +1,22 @@
 package utiles.fecha;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Fecha {
 	private GregorianCalendar calendar;
 	
+	private static final Locale locale = new Locale("es", "ES");
+	
 	/**
 	 * Constructor por defecto
 	 */
 	public Fecha(){
-		calendar=new GregorianCalendar();
+		calendar=new GregorianCalendar(locale);
 	}
 	/**
 	 * Constructor que recibe como parámetros el día, el mes y el año
@@ -20,7 +25,6 @@ public class Fecha {
 	public Fecha(int dia,int mes,int anno) throws FechaNoValidaException{
 		if(!esValida(dia,mes-1,anno))
 			throw new FechaNoValidaException("Fecha no válida.");
-		setGregorianCalendar(dia,mes-1,anno);
 	}
 	
 	/**
@@ -34,10 +38,6 @@ public class Fecha {
 			throw new FormatoNoValidoException("Formato no válido.");
 		if(!esValida(cadena))
 			throw new FechaNoValidaException("Fecha no válida.");
-		String[] array=obtenerArrayDiaMesAnno(cadena);
-		setGregorianCalendar(Integer.parseInt(array[0]),
-					Integer.parseInt(array[1])-1,
-					Integer.parseInt(array[2]));
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Fecha {
 		try {
 			setGregorianCalendar(dia,mes,anno);
 			return true;
-		} catch (FechaNoValidaException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}
@@ -99,11 +99,12 @@ public class Fecha {
 	private boolean esValida(String cadena){
 		String[] array=obtenerArrayDiaMesAnno(cadena);
 		try {
-			setGregorianCalendar(Integer.parseInt(array[0]),
+			if(esValida(Integer.parseInt(array[0]),
 					Integer.parseInt(array[1])-1,
-					Integer.parseInt(array[2]));
-			return true;
-		} catch (NumberFormatException | FechaNoValidaException e) {
+					Integer.parseInt(array[2])))		
+				return true;
+			return false;
+		} catch (NumberFormatException e) {
 			return false;
 		}
 	}
@@ -114,10 +115,15 @@ public class Fecha {
 	 * @return diferencia en días
 	 */
 	public long calcularDiasTranscurridos(Fecha fecha){
-		long diferencia;
-		diferencia=Math.abs((calendar.getTimeInMillis()-
-				fecha.calendar.getTimeInMillis())/1000/60/60/24);
-		return diferencia;
+		LocalDate fecha1=LocalDate.of(fecha.calendar.get(GregorianCalendar.YEAR),
+				fecha.calendar.get(GregorianCalendar.MONTH)+1,
+				fecha.calendar.get(GregorianCalendar.DAY_OF_MONTH));
+		
+		LocalDate fecha2=LocalDate.of(calendar.get(GregorianCalendar.YEAR),
+				calendar.get(GregorianCalendar.MONTH)+1,
+				calendar.get(GregorianCalendar.DAY_OF_MONTH));
+		
+		return Math.abs(ChronoUnit.DAYS.between(fecha1, fecha2));
 	}
 	
 	/**
@@ -126,10 +132,15 @@ public class Fecha {
 	 * @return diferencia en años
 	 */
 	public long calcularAnnosTranscurridos(Fecha fecha){
-		long diferencia;
-		diferencia=Math.abs((calendar.getTimeInMillis()-
-				fecha.calendar.getTimeInMillis())/1000/60/60/24/365);
-		return diferencia;
+		LocalDate fecha1=LocalDate.of(fecha.calendar.get(GregorianCalendar.YEAR),
+				fecha.calendar.get(GregorianCalendar.MONTH)+1,
+				fecha.calendar.get(GregorianCalendar.DAY_OF_MONTH));
+		
+		LocalDate fecha2=LocalDate.of(calendar.get(GregorianCalendar.YEAR),
+				calendar.get(GregorianCalendar.MONTH)+1,
+				calendar.get(GregorianCalendar.DAY_OF_MONTH));
+		
+		return Math.abs(ChronoUnit.YEARS.between(fecha1, fecha2));
 	}
 	
 	/**
@@ -137,11 +148,13 @@ public class Fecha {
 	 * @return true si tiene 18 o más y false si tiene menos
 	 */
 	public boolean esMayorDeEdad(){
-		Fecha fecha=new Fecha();
-		long diferencia=Math.abs((calendar.getTimeInMillis()-
-				fecha.calendar.getTimeInMillis())/1000/60/60/24/365);
+		LocalDate fecha=LocalDate.of(calendar.get(GregorianCalendar.YEAR),
+				calendar.get(GregorianCalendar.MONTH)+1,
+				calendar.get(GregorianCalendar.DAY_OF_MONTH));
 		
-		if(diferencia<18)
+		LocalDate fecha2 = LocalDate.now();
+		
+		if(ChronoUnit.YEARS.between(fecha,fecha2)<18)
 			return false;
 		return true;
 			
@@ -160,31 +173,7 @@ public class Fecha {
 	 * @return cadena con el día de la semana
 	 */
 	public String getDiaDeLaSemana(){
-		String dia="";
-		switch(calendar.get(Calendar.DAY_OF_WEEK)-1){
-		
-		case 0:
-			dia += "Domingo";
-			break;
-		case 1:
-			dia += "Lunes";
-			break;
-		case 2:
-			dia += "Martes";
-			break;
-		case 3:
-			dia += "Miercoles";
-			break;
-		case 4:
-			dia += "Jueves";
-			break;
-		case 5:
-			dia += "Viernes";
-			break;
-		case 6:
-			dia += "Sabado";
-		}
-		return dia;
+		return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale);
 	}
 	
 	/**
@@ -192,45 +181,7 @@ public class Fecha {
 	 * @return cadena con el mes
 	 */
 	public String getMes(){
-		String mes = "";
-		switch (calendar.get(Calendar.MONTH)) {
-		case 0:
-			mes += "Enero";
-			break;
-		case 1:
-			mes += "Febrero";
-			break;
-		case 2:
-			mes += "Marzo";
-			break;
-		case 3:
-			mes += "Abril";
-			break;
-		case 4:
-			mes += "Mayo";
-			break;
-		case 5:
-			mes += "Junio";
-			break;
-		case 6:
-			mes += "Julio";
-			break;
-		case 7:
-			mes += "Agosto";
-			break;
-		case 8:
-			mes += "Septiembre";
-			break;
-		case 9:
-			mes += "Octubre";
-			break;
-		case 10:
-			mes += "Noviembre";
-			break;
-		case 11:
-			mes += "Diciembre";
-		}
-		return mes;
+		return calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
 	}
 	
 	/**

@@ -52,6 +52,7 @@ public class Combate extends JDialog {
 	private JLabel estadisticaPersonaje2;
 	private JTextField textFieldEstadisticaPersonaje1;
 	private JTextField textFieldEstadisticaPersonaje2;		
+	private static int auxiliar = 0;
 	
 	/**
 	 * Create the dialog.	 
@@ -176,13 +177,13 @@ public class Combate extends JDialog {
 		panel_1.add(textFieldEstadisticaPersonaje2);
 		
 		try {
-			establecerPersonaje1(personaje1);
-			establecerPersonaje2(personaje2);			
+	//		establecerPersonaje1(personaje1);
+	//		establecerPersonaje2(personaje2);
+			establecerPersonaje(personaje1);
+			establecerPersonaje(personaje2);
 			activarBotonesPersonaje1();			
 			
-		} catch (NombreNoValidoException e) {
-			
-		} catch (PersonajeNoExisteException e) {
+		} catch (NombreNoValidoException |PersonajeNoExisteException e) {
 			
 		}
 		{
@@ -263,7 +264,7 @@ public class Combate extends JDialog {
 			textFieldEstadisticaPersonaje2.setText(String.valueOf(estadisticaRestantePersonaje2));			
 			return ((Mago) personaje2).calcularHechizoFuerte();
 			
-		default:
+		default://picaro
 			estadisticaRestantePersonaje2 -= 5;
 			textFieldEstadisticaPersonaje2.setText(String.valueOf(estadisticaRestantePersonaje2));
 			return ((Picaro) personaje2).calcularAtaqueFuerte();
@@ -289,7 +290,7 @@ public class Combate extends JDialog {
 			case "Mago":
 				return ((Mago) personaje).calcularHechizoNormal();
 				
-			default:
+			default://picaro
 				return ((Picaro) personaje).calcularAtaqueNormal();			
 		}		
 	}		
@@ -319,131 +320,130 @@ public class Combate extends JDialog {
 	}	
 	
 	/**
-	 * Establece las estadisticas y acciones que tendrá el personaje 1
+	 * Establece las estadisticas y acciones que tendrá el personaje recibido
 	 * dependiendo de la clase a la que pertenezca
 	 * @param personaje El personaje recibido
 	 * @throws PersonajeNoExisteException Excepción personaje no existe
 	 * @throws NombreNoValidoException Excepción nombre no válido 
 	 */
-	private void establecerPersonaje1(Personaje personaje) throws NombreNoValidoException, PersonajeNoExisteException{
-		switch (personaje.getClass().getSimpleName()) {
-		case "Brujo":
-			estadisticaRestantePersonaje1 = ((Brujo)personaje).getMana();
-			vidaRestantePersonaje1 = ((Brujo)personaje).getVida();		
-			establecerBrujo((Brujo)personaje,
-							btnAccion1Personaje1,
-							btnAccion2Personaje1,
-							estadisticaPersonaje1,
-							textFieldEstadisticaPersonaje1,							
-							textFieldVidaPersonaje1,
-							estadisticaRestantePersonaje1,
-							vidaRestantePersonaje1);			
-			break;
-			
-		case "Guerrero":
-			estadisticaRestantePersonaje1 = ((Guerrero) personaje).getIra();
-			vidaRestantePersonaje1 = personaje.getVida();		
-			establecerGuerrero((Guerrero)personaje,
+	private void establecerPersonaje(Personaje personaje) throws NombreNoValidoException, PersonajeNoExisteException{
+		
+		if(auxiliar%2==0){
+			switch (personaje.getClass().getSimpleName()) {
+			case "Brujo":
+				estadisticaRestantePersonaje1 = ((Brujo)personaje).getMana();
+				vidaRestantePersonaje1 = ((Brujo)personaje).getVida();		
+				establecerBrujo(
 								btnAccion1Personaje1,
 								btnAccion2Personaje1,
 								estadisticaPersonaje1,
 								textFieldEstadisticaPersonaje1,							
 								textFieldVidaPersonaje1,
 								estadisticaRestantePersonaje1,
-								vidaRestantePersonaje1);	
-			break;
-			
-		case "Mago":
-			estadisticaRestantePersonaje1 = ((Mago) personaje).getMana();
-			vidaRestantePersonaje1 = personaje.getVida();		
-			establecerMago((Mago)personaje,
-							btnAccion1Personaje1,
-							btnAccion2Personaje1,
-							estadisticaPersonaje1,
-							textFieldEstadisticaPersonaje1,							
-							textFieldVidaPersonaje1,
-							estadisticaRestantePersonaje1,
-							vidaRestantePersonaje1);
-			break;
-			
-		default:
-			estadisticaRestantePersonaje1 = ((Picaro) personaje).getEnergia();
-			vidaRestantePersonaje1 = personaje.getVida();		
-			establecerPicaro((Picaro)personaje,
-							btnAccion1Personaje1,
-							btnAccion2Personaje1,
-							estadisticaPersonaje1,
-							textFieldEstadisticaPersonaje1,							
-							textFieldVidaPersonaje1,
-							estadisticaRestantePersonaje1,
-							vidaRestantePersonaje1);
-		}
-	}	
-	
-	/**
-	 * Establece las estadisticas y acciones que tendrá el personaje 2
-	 * dependiendo de la clase a la que pertenezca
-	 * @param personaje El personaje recibido
-	 * @throws PersonajeNoExisteException Excepción personaje no existe
-	 * @throws NombreNoValidoException Excepción nombre no válido
-	 */
-	private void establecerPersonaje2(Personaje personaje) throws NombreNoValidoException, PersonajeNoExisteException{
-		switch (personaje.getClass().getSimpleName()) {
-		case "Brujo":
-			estadisticaRestantePersonaje2 = ((Brujo) personaje).getMana();
-			vidaRestantePersonaje2 = personaje.getVida();		
-			establecerBrujo((Brujo)personaje,
-							btnAccion1Personaje2,
-							btnAccion2Personaje2,
-							estadisticaPersonaje2,
-							textFieldEstadisticaPersonaje2,							
-							textFieldVidaPersonaje2,
-							estadisticaRestantePersonaje2,
-							vidaRestantePersonaje2);
-			
-			break;
-			
-		case "Guerrero":
-			estadisticaRestantePersonaje2 = ((Guerrero) personaje).getIra();
-			vidaRestantePersonaje2 = personaje.getVida();		
-			establecerGuerrero((Guerrero)personaje,
-							btnAccion1Personaje2,
-							btnAccion2Personaje2,
-							estadisticaPersonaje2,
-							textFieldEstadisticaPersonaje2,							
-							textFieldVidaPersonaje2,
-							estadisticaRestantePersonaje2,
-							vidaRestantePersonaje2);
+								vidaRestantePersonaje1);			
+				break;
 				
-			break;
+			case "Guerrero":
+				estadisticaRestantePersonaje1 = ((Guerrero) personaje).getIra();
+				vidaRestantePersonaje1 = personaje.getVida();		
+				establecerGuerrero(
+									btnAccion1Personaje1,
+									btnAccion2Personaje1,
+									estadisticaPersonaje1,
+									textFieldEstadisticaPersonaje1,							
+									textFieldVidaPersonaje1,
+									estadisticaRestantePersonaje1,
+									vidaRestantePersonaje1);	
+				break;
+				
+			case "Mago":
+				estadisticaRestantePersonaje1 = ((Mago) personaje).getMana();
+				vidaRestantePersonaje1 = personaje.getVida();		
+				establecerMago(
+								btnAccion1Personaje1,
+								btnAccion2Personaje1,
+								estadisticaPersonaje1,
+								textFieldEstadisticaPersonaje1,							
+								textFieldVidaPersonaje1,
+								estadisticaRestantePersonaje1,
+								vidaRestantePersonaje1);
+				break;
+				
+			default:
+				estadisticaRestantePersonaje1 = ((Picaro) personaje).getEnergia();
+				vidaRestantePersonaje1 = personaje.getVida();		
+				establecerPicaro(
+								btnAccion1Personaje1,
+								btnAccion2Personaje1,
+								estadisticaPersonaje1,
+								textFieldEstadisticaPersonaje1,							
+								textFieldVidaPersonaje1,
+								estadisticaRestantePersonaje1,
+								vidaRestantePersonaje1);
+			}
 			
-		case "Mago":
-			estadisticaRestantePersonaje2 = ((Mago) personaje).getMana();
-			vidaRestantePersonaje2 = personaje.getVida();		
-			establecerMago((Mago)personaje,
-					btnAccion1Personaje2,
-					btnAccion2Personaje2,
-					estadisticaPersonaje2,
-					textFieldEstadisticaPersonaje2,							
-					textFieldVidaPersonaje2,
-					estadisticaRestantePersonaje2,
-					vidaRestantePersonaje2);
-			break;
-			
-		default:
-			estadisticaRestantePersonaje2 = ((Picaro) personaje).getEnergia();
-			vidaRestantePersonaje2 = personaje.getVida();		
-			establecerPicaro((Picaro)personaje,
-					btnAccion1Personaje2,
-					btnAccion2Personaje2,
-					estadisticaPersonaje2,
-					textFieldEstadisticaPersonaje2,							
-					textFieldVidaPersonaje2,
-					estadisticaRestantePersonaje2,
-					vidaRestantePersonaje2);
 		}
+		else{
+			
+			switch (personaje.getClass().getSimpleName()) {
+			case "Brujo":
+				estadisticaRestantePersonaje2 = ((Brujo) personaje).getMana();
+				vidaRestantePersonaje2 = personaje.getVida();		
+				establecerBrujo(
+								btnAccion1Personaje2,
+								btnAccion2Personaje2,
+								estadisticaPersonaje2,
+								textFieldEstadisticaPersonaje2,							
+								textFieldVidaPersonaje2,
+								estadisticaRestantePersonaje2,
+								vidaRestantePersonaje2);
+				
+				break;
+				
+			case "Guerrero":
+				estadisticaRestantePersonaje2 = ((Guerrero) personaje).getIra();
+				vidaRestantePersonaje2 = personaje.getVida();		
+				establecerGuerrero(
+								btnAccion1Personaje2,
+								btnAccion2Personaje2,
+								estadisticaPersonaje2,
+								textFieldEstadisticaPersonaje2,							
+								textFieldVidaPersonaje2,
+								estadisticaRestantePersonaje2,
+								vidaRestantePersonaje2);
+					
+				break;
+				
+			case "Mago":
+				estadisticaRestantePersonaje2 = ((Mago) personaje).getMana();
+				vidaRestantePersonaje2 = personaje.getVida();		
+				establecerMago(
+						btnAccion1Personaje2,
+						btnAccion2Personaje2,
+						estadisticaPersonaje2,
+						textFieldEstadisticaPersonaje2,							
+						textFieldVidaPersonaje2,
+						estadisticaRestantePersonaje2,
+						vidaRestantePersonaje2);
+				break;
+				
+			default:
+				estadisticaRestantePersonaje2 = ((Picaro) personaje).getEnergia();
+				vidaRestantePersonaje2 = personaje.getVida();		
+				establecerPicaro(
+						btnAccion1Personaje2,
+						btnAccion2Personaje2,
+						estadisticaPersonaje2,
+						textFieldEstadisticaPersonaje2,							
+						textFieldVidaPersonaje2,
+						estadisticaRestantePersonaje2,
+						vidaRestantePersonaje2);
+			}
+			
+		}
+			auxiliar++;
 	}	
-	
+
 	/**
 	 * Comprueba si alguno de los dos personajes ha ganado la partida.
 	 * En caso afirmativo, mostrará un diálogo informando de ello
@@ -465,7 +465,6 @@ public class Combate extends JDialog {
 	
 	/**
 	 * Establece los botones del personaje en caso de ser un pícaro
-	 * @param picaro El personaje
 	 * @param btnAccion1Personaje El botón de acción 1 del personaje
 	 * @param btnAccion2Personaje El botón de acción 2 del personaje
 	 * @param estadisticaPersonaje El nombre de la estadística del personaje
@@ -474,7 +473,7 @@ public class Combate extends JDialog {
 	 * @param estadisticaRestantePersonaje Valor de la estadística del personaje
 	 * @param vidaRestantePersonaje Valor de la vida del personaje
 	 */
-	private void establecerPicaro(Picaro picaro,
+	private void establecerPicaro(
 			JButton btnAccion1Personaje,
 			JButton btnAccion2Personaje,
 			JLabel estadisticaPersonaje,
@@ -491,7 +490,6 @@ public class Combate extends JDialog {
 
 	/**
 	 * Establece los botones del personaje en caso de ser un mago
-	 * @param mago El personaje
 	 * @param btnAccion1Personaje El botón de acción 1 del personaje
 	 * @param btnAccion2Personaje El botón de acción 2 del personaje
 	 * @param estadisticaPersonaje El nombre de la estadística del personaje
@@ -500,7 +498,7 @@ public class Combate extends JDialog {
 	 * @param estadisticaRestantePersonaje Valor de la estadística del personaje
 	 * @param vidaRestantePersonaje Valor de la vida del personaje
 	 */
-	private void establecerMago(Mago mago,
+	private void establecerMago(
 				JButton btnAccion1Personaje,
 				JButton btnAccion2Personaje,
 				JLabel estadisticaPersonaje,
@@ -517,7 +515,6 @@ public class Combate extends JDialog {
 	
 	/**
 	 * Establece los botones del personaje en caso de ser un guerrero
-	 * @param guerrero El personaje
 	 * @param btnAccion1Personaje El botón de acción 1 del personaje
 	 * @param btnAccion2Personaje El botón de acción 2 del personaje
 	 * @param estadisticaPersonaje El nombre de la estadística del personaje
@@ -526,7 +523,7 @@ public class Combate extends JDialog {
 	 * @param estadisticaRestantePersonaje Valor de la estadística del personaje
 	 * @param vidaRestantePersonaje Valor de la vida del personaje
 	 */
-	private void establecerGuerrero(Guerrero guerrero,
+	private void establecerGuerrero(
 					JButton btnAccion1Personaje,
 					JButton btnAccion2Personaje,
 					JLabel estadisticaPersonaje,
@@ -544,7 +541,6 @@ public class Combate extends JDialog {
 	
 	/**
 	 * Establece los botones del personaje en caso de ser un brujo
-	 * @param brujo El personaje
 	 * @param btnAccion1Personaje El botón de acción 1 del personaje
 	 * @param btnAccion2Personaje El botón de acción 2 del personaje
 	 * @param estadisticaPersonaje El nombre de la estadística del personaje
@@ -553,7 +549,7 @@ public class Combate extends JDialog {
 	 * @param estadisticaRestantePersonaje Valor de la estadística del personaje
 	 * @param vidaRestantePersonaje Valor de la vida del personaje
 	 */
-	private void establecerBrujo(Brujo brujo,
+	private void establecerBrujo(
 				JButton btnAccion1Personaje,
 				JButton btnAccion2Personaje,
 				JLabel estadisticaPersonaje,
